@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Items
+            <a href="{% url 'myapp:MyCartView' %}" class="text-info">
+
+
+                <span class="micon bi bi-cart4"></span>
+                <span class="micon bi bi-cart4"></span>
+                <span class="micon bi bi-cart4"></span>
+
+
+            </a>
+        </h4>
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr class="table-warning">
+                <th class="table-plus datatable-nosort">Item Name</th>
+                <th>Category</th>
+                <th>Sale Price</th>
+                <th>Balance Qty</th>
+                <th>Add to Cart</th>
+                <!--										<th class="datatable-nosort">Action</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in product_list %}
+            <tr class="table-info">
+                <td class="table-plus"><a href="{% url 'myapp:ProductEditView' p.id %}">{{p.item_name}}</a></td>
+                <td>{{p.category}}</td>
+                <td>{{p.sell_price}}</td>
+                <td>{{p.balance_qty}}</td>
+                <td><a href="{% url 'myapp:AddToCartView' p.id %}" class="btn btn-sm btn-outline-primary"> Add to
+                    Cart</a></td>
+
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- Export Datatable start -->
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Invoice List</h4>
+    </div>
+    <div class="pb-20">
+        <table
+                class="table hover data-table-export nowrap"
+        >
+            <thead>
+            <tr class="table-warning">
+                <th class="table-plus datatable-nosort">Customer Name</th>
+                <th>Invoice No</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in queryset %}
+            <tr class="table-info">
+                <td class="table-plus">{{p.ordered_by}}</td>
+                <td><a href="{% url 'myapp:InvoiceDetailView' p.id%}"><strong>{{p.id}}</strong></a></td>
+                <td>{{p.all_total}}</td>
+                <td>{{p.created_at}}</td>
+                <td data-color="red">{{p.ordered_staus}}</td>
+
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>Grand Total</td>
+                <td><strong>{{sum}}</strong></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<!-- Export Datatable End -->
+
+
+
+{% endblock content %}
+

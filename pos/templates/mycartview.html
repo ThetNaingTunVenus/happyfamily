@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="card-box mb-30">
+    <div class="pd-20">
+        {% if message %}
+        <h5 class="text-danger">{{message}}</h5>
+
+        {% endif %}
+        <!--							<h4 class="text-blue h4">Items List</h4>-->
+
+        <form action="{% url 'myapp:testbarcode' %}" method="post">{% csrf_token %}
+            <div class="row">
+                <input type="number" placeholder="Get Barcode" name="pid" class="form-control col-md-4" autofocus>
+                <button type="submit" class="btn btn-sm btn-success" hidden>Barcode</button>
+            </div>
+
+        </form>
+
+
+    </div>
+    <div class="pb-20">
+        <table class="table stripe hover nowrap">
+            <thead>
+            <tr>
+                <th>SN</th>
+                <th>Item Name</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                {% if cart.cartproduct_set.all %}
+                <th>Edit</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in cart.cartproduct_set.all %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>
+                    <a href="#">{{p.product.item_name}}</a>
+
+
+                </td>
+                <td>{{p.rate}}</td>
+                <td>{{p.quantity}}</td>
+                <td>{{p.subtotal}}</td>
+                <td>
+                    <a href="{% url 'myapp:ManageCartView' p.id %}?action=inc"
+                       class="btn btn-sm btn-outline-success">+</a>
+                    <a href="{% url 'myapp:ManageCartView' p.id %}?action=dcr"
+                       class="btn btn-sm btn-outline-warning">-</a>
+                    <a href="{% url 'myapp:ManageCartView' p.id %}?action=rmv"
+                       class="btn btn-sm btn-outline-danger">x</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <td colspan="4" class="text-right">Amount :</td>
+                <td>{{cart.total}}</td>
+                {% if cart.cartproduct_set.all %}
+                <td></td>
+                {% endif %}
+
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right">Tax :</td>
+                <td>{{cart.tax}}</td>
+                {% if cart.cartproduct_set.all %}
+                <td></td>
+                {% endif %}
+                <!--                            {% if cart.cartproduct_set.all %}-->
+                <!--                            <td><a href="{% url 'myapp:EmptyCartView' %}" class="btn btn-sm btn-outline-danger">Empty Cart ?</a></td>-->
+                <!--                            {% endif %}-->
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right">Total :</td>
+                <td>{{cart.super_total}}</td>
+                {% if cart.cartproduct_set.all %}
+                <td><a href="{% url 'myapp:CheckoutView' %}" class="btn btn-sm btn-outline-primary">Check Out Detail</a>
+                </td>
+                {% endif %}
+
+            </tr>
+            <!--                                <tr>-->
+            <!--                                    {% if cart.cartproduct_set.all %}-->
+            <!--                            <td colspan="4" class="text-right"><a href="{% url 'myapp:EmptyCartView' %}" class="btn btn-sm btn-outline-danger">Empty Cart ?</a></td>-->
+            <!--                            {% endif %}-->
+
+            <!--                                   {% if cart.cartproduct_set.all %}-->
+            <!--                            <td><a href="{% url 'myapp:CheckoutView' %}" class="btn btn-sm btn-outline-primary">Check Out Detail</a></td>-->
+            <!--                            {% endif %}-->
+            <!--                                </tr>-->
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Items
+            <a href="{% url 'myapp:MyCartView' %}" class="text-info">
+
+
+                <span class="micon bi bi-cart4"></span>
+                <span class="micon bi bi-cart4"></span>
+                <span class="micon bi bi-cart4"></span>
+
+
+            </a>
+        </h4>
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr class="">
+                <th class="table-plus datatable-nosort">Item Name</th>
+                <th>Category</th>
+                <th>Sale Price</th>
+                <th>Balance Qty</th>
+                <!--                <th>Add to Cart</th>-->
+                <!--										<th class="datatable-nosort">Action</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in product_list %}
+            <tr class="table-info">
+                <td class="table-plus"><a href="{% url 'myapp:AddToCartView' p.id %}"><h6 class="text-blue">
+                    {{p.item_name}}</h6></a></td>
+                <td>{{p.category}}</td>
+                <td>{{p.sell_price}}</td>
+                <td>{{p.balance_qty}}</td>
+                <!--                <td><a href="{% url 'myapp:AddToCartView' p.id %}" class="btn btn-sm btn-outline-primary"> Add to-->
+                <!--                    Cart</a></td>-->
+
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Export Datatable start -->
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Invoice List</h4>
+    </div>
+    <div class="pb-20">
+        <table
+                class="table hover data-table-export nowrap"
+        >
+            <thead>
+            <tr class="">
+                <th class="table-plus datatable-nosort">Customer Name</th>
+                <th>Invoice No</th>
+                <!--                <th>Amount</th>-->
+                <th>Date</th>
+                <th>status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in queryset %}
+            <tr class="">
+                <td class="table-plus">{{p.ordered_by}}</td>
+                <td><a href="{% url 'myapp:pdf_invoice_create' p.id%}"><strong>{{p.id}}</strong></a></td>
+                <!--                <td>{{p.all_total}}</td>-->
+                <td>{{p.created_at}}</td>
+                <td>
+                    <!-- <a href="{% url 'myapp:InvoiceDetailView' p.id%}" class="btn btn-sm btn-outline-primary">print
+                        preview</a> -->
+                    <a href="{% url 'myapp:InvoiceThermalPrintView' p.id%}" target="_blank" class="btn btn-sm btn-danger">Print</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>Grand Total</td>
+                <!--                <td><strong>{{sum}}</strong></td>-->
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<!-- Export Datatable End -->
+
+
+{% endblock content %}
+

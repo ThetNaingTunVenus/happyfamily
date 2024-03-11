@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main>
+    <div class="container-fluid">
+<!--        <img src="{% static 'vendors/images/phootu.png' %}" alt="" />-->
+
+        <div class="card mb-4">
+            <div class="card-header">
+
+                <a href="#"><h5>Customer Detail</h5></a>
+            </div>
+            <div class="card-body">
+                <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                    {{form}}
+                    <hr>
+                    <input type="submit" class="btn btn-primary" value="Create Invoice">
+
+                </form>
+            </div>
+        </div>
+<!--                                <h5 class="mt-4">{{cart.id}}</h5>-->
+<!--        <ol class="breadcrumb mb-4 mt-2">-->
+<!--            <li class="breadcrumb-item active"></li>-->
+<!--        </ol>-->
+
+
+        <div class="card mb-4">
+            <div class="card-header">
+
+                <h6>{{cart.id}}</h6>
+<!--                <a href="{% url 'myapp:MyCartView' %}"><b>{{cart.id}}</b></a>-->
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Item Name</th>
+                            <th>Rate</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+<!--                            <th>Edit</th>-->
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+
+                        </tr>
+                        </tfoot>
+                        <tbody>
+
+                        {% for p in cart.cartproduct_set.all %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="#">{{p.product.item_name}}</a></td>
+                            <td>{{p.rate}}</td>
+                            <td>{{p.quantity}}</td>
+                            <td>{{p.subtotal}}</td>
+
+
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <td colspan="4" class="text-right">Amount :</td>
+                            <td>{{cart.total}}</td>
+<!--                            <td></td>-->
+
+                        </tr>
+<!--                        <tr>-->
+<!--                            <td colspan="4" class="text-right">Tax :</td>-->
+<!--                            <td>{{cart.tax}}</td>-->
+<!--&lt;!&ndash;                            <td></td>&ndash;&gt;-->
+
+<!--                        </tr>-->
+                        <tr>
+                            <td colspan="5" class="text-center">အားပေးမှုကို အထူးကျေးဇူးတင်ပါသည်..</td>
+<!--                            <td>{{cart.super_total}}</td>-->
+
+
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</main>
+
+
+{% endblock content %}

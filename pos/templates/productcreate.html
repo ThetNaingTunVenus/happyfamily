@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!--<div class="page-header">-->
+<!--    <div class="row">-->
+<!--        <div class="col-md-6 col-sm-12">-->
+<!--            <div class="title">-->
+<!--                <h5>Create New Product</h5>-->
+
+<!--            </div>-->
+<!--            <hr>-->
+<!--            {% if message %}-->
+<!--            <div class="alert alert-danger" role="alert">-->
+<!--                {{message}}-->
+<!--            </div>-->
+<!--            {% endif %}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="row">-->
+<!--        <div class="col-md-6 col-sm-12">-->
+<!--            <form action="{% url 'myapp:ProductCreate' %}" method="post">{% csrf_token %}-->
+<!--                <div class="form-group row">-->
+<!--                    <label class="col-sm-12 col-md-2 col-form-label">Item Name</label>-->
+<!--                    <div class="col-sm-12 col-md-10">-->
+<!--                        <input class="form-control" type="text" placeholder="" name="item_name">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-group row">-->
+<!--                    <label class="col-sm-12 col-md-2 col-form-label">Category</label>-->
+<!--                    <div class="col-sm-12 col-md-10">-->
+<!--                        <select class="custom-select col-12" name="category">-->
+<!--                            <option selected="">Select Category Name</option>-->
+<!--                            {% for c in category %}-->
+<!--                            <option>{{c.category_name}}</option>-->
+<!--                            {% endfor %}-->
+
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--                <div class="form-group row">-->
+<!--                    <label class="col-sm-12 col-md-2 col-form-label">Purchase Price</label>-->
+<!--                    <div class="col-sm-12 col-md-10">-->
+<!--                        <input class="form-control" type="number" placeholder="" name="purchase_price">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-group row">-->
+<!--                    <label class="col-sm-12 col-md-2 col-form-label">Sale Price</label>-->
+<!--                    <div class="col-sm-12 col-md-10">-->
+<!--                        <input class="form-control" type="number" placeholder="" name="sale_price">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-group row">-->
+<!--                    <label class="col-sm-12 col-md-2 col-form-label">BarCode</label>-->
+<!--                    <div class="col-sm-12 col-md-10">-->
+<!--                        <input class="form-control" type="number" placeholder="" value="0" name="barcode_id">-->
+<!--                    </div>-->
+<!--                </div>-->
+
+
+<!--                <input type="submit" value="CreateProduct" class="btn btn-outline-primary">-->
+
+
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+{% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+            {% endif %}
+
+
+<h4 class="text-blue h4">Item List</h4>
+<!--=============================================================-->
+<div class="card-box mb-30">
+    <div class="pd-20">
+<!--        <h4 class="text-blue h4">Item List</h4>-->
+        <a
+									href="#"
+									class="btn btn-sm btn-outline-primary"
+									data-toggle="modal"
+									data-target="#Medium-modal"
+									type="button"
+								>
+									+ Add Item Name
+								</a>
+								<div
+									class="modal fade"
+									id="Medium-modal"
+									tabindex="-1"
+									role="dialog"
+									aria-labelledby="myLargeModalLabel"
+									aria-hidden="true"
+								>
+									<div class="modal-dialog modal-dialog-centered">
+                                        <form action="{% url 'myapp:ProductCreate' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title" id="myLargeModalLabel">
+													New Item
+												</h4>
+												<button
+													type="button"
+													class="close"
+													data-dismiss="modal"
+													aria-hidden="true"
+												>
+													×
+												</button>
+											</div>
+
+											<div class="modal-body">
+												<div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">Item Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="text" placeholder="" name="item_name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">Category</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="custom-select col-12" name="category">
+                            <option selected="">Select Category Name</option>
+                            {% for c in category %}
+                            <option>{{c.category_name}}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">Purchase Price</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="number" placeholder="" name="purchase_price">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">Sale Price</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="number" placeholder="" name="sale_price">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">BarCode</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="text" placeholder="" value="0" name="barcode_id">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-12 col-form-label">Description</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="text" placeholder="" value="How To" name="itmdesc">
+                    </div>
+                </div>
+                
+											</div>
+											<div class="modal-footer">
+												<button
+													type="button"
+													class="btn btn-secondary"
+													data-dismiss="modal"
+												>
+													Close
+												</button>
+												<button type="submit" class="btn btn-primary">
+													Save Item Name
+												</button>
+											</div>
+										</div>
+                                            </form>
+									</div>
+								</div>
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr class="table-warning">
+
+                <th>Name</th>
+                <th>Category</th>
+                <th>PurchasePrice</th>
+                <th>SalePrice</th>
+                <th>BalanceQTY</th>
+                
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in item_list %}
+            <tr>
+                <td class="table-plus"><a href="#"><b>{{p.item_name}}</b></a></td>
+                <td>{{p.category}}</td>
+                <td>{{p.pruchase_price}}</td>
+                <td>{{p.sell_price}}</td>
+                <td>{{p.balance_qty}}</td>
+                
+
+
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}
+
