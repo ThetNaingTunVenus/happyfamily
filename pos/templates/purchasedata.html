@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<!--=============================================================-->
+{% if message %}
+<div class="alert alert-danger" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% if success %}
+<div class="alert alert-success" role="alert">
+    {{success}}
+</div>
+{% endif %}
+
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <!--        <h4 class="text-blue h4">Supplier List</h4>-->
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr>
+
+                <th class="text-primary">Supplier Name</th>
+                <th class="text-primary">Address</th>
+                <th class="text-primary">Create</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in supplier %}
+            <tr>
+
+                <td class="table-plus"><b>{{p.supplier_name}}</b></td>
+                <td>{{p.address}}</td>
+                <td><a href="{% url 'myapp:PurchaseCreateView' p.id%}" class="btn btn-sm btn-primary"><i class="icon-copy dw dw-edit1"></i>Purchase
+                    Invoice</a></td>
+
+
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<hr>
+
+<!-- Bootstrap Select Start -->
+					<div class="pd-20 card-box mb-30">
+						<div class="clearfix">
+							<div class="pull-left">
+								<h4 class="text-blue h4">Filter Report</h4>
+
+							</div>
+						</div>
+						<form action="{% url 'myapp:PurchaseReport' %}" method="post">{% csrf_token %}
+							<div class="row">
+								<div class="col-md-4 col-sm-12">
+									<div class="form-group">
+										<label>From Date</label>
+                                        <input type="date" name="fromdate" class="form-control">
+									</div>
+								</div>
+                                <div class="col-md-4 col-sm-12">
+									<div class="form-group">
+										<label>To Date</label>
+                                        <input type="date" name="todate" class="form-control">
+									</div>
+								</div>
+
+							</div>
+                            <button
+										type="submit"
+										class="btn btn-sm"
+										data-bgcolor="#00b489"
+										data-color="#ffffff"
+									>
+                                <i class="icon-copy dw dw-filter-1"></i>Filter Report
+
+									</button>
+
+						</form>
+					</div>
+					<!-- Bootstrap Select End -->
+<!-- Export Datatable start -->
+<div class="card-box mb-30">
+
+    <div class="pd-20">
+        <h4 class="text-blue h4">Purchase Invoice Report</h4>
+
+    </div>
+    <div class="pb-20">
+        <table
+                class="table hover data-table-export nowrap"
+        >
+            <thead>
+            <tr class="table-info">
+                <th>Date</th>
+                <th class="text-center">Supplier Name</th>
+                <th class="text-center">Items</th>
+                <th class="text-center">Qty</th>
+                <th>Purchase Price</th>
+                <th>Logistic</th>
+                <th>Total</th>
+                <th>Action</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in purchasedata %}
+            <tr class="">
+                <td>{{p.p_date}}</td>
+                <td class="table-plus"><b>{{p.supplier_name}}</b></td>
+                <td>{{p.item_name}}</td>
+                <td>{{p.purchase_qty}}</td>
+                <td>{{p.purchase_price}}</td>
+                <td>{{p.logistic}}</td>
+                <td>{{p.total_purchase_price}}</td>
+                <td><a href="{% url 'myapp:PurchaseDataDelete' p.id %}" class="btn btn-sm btn-danger"><i class="icon-copy bi bi-trash"></i></a></td>
+
+            </tr>
+            {% endfor %}
+
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <th>TOTAL</th>
+                <th>{{sum_purchase_qty}}</th>
+                <th>{{sum_purchase_price}}</th>
+                <th>{{sum_logistic}}</th>
+                <th>{{sum_purchase_total}}</th>
+                <th></th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<!-- Export Datatable End -->
+{% endblock content %}
+

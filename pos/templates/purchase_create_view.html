@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="title">
+                <h5>Create Purchase</h5>
+
+            </div>
+            <hr>
+            {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{success}}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <form action="{% url 'myapp:PurchaseData' %}" method="post">{% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Supplier Name</label>
+                            <div class="col-sm-12 col-md-10 ">
+                                <input type="text" class="form-control" name="suppliername" placeholder="{{supplier.supplier_name}}" value="{{supplier.supplier_name}}" readonly="True">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Purchase Date</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="date" placeholder="" name="p_date">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-md-2 col-form-label">Item</label>
+                            <select
+                                    class="custom-select2 form-control col-sm-6 col-md-6"
+                                    name="item_name"
+                                    style="width: 80%; height: 38px"
+                            >
+<!--                                <optgroup label="select item name">-->
+                                    {% for i in item %}
+                                    <option value="{{i.item_name}}">{{i.item_name}}</option>
+                                    {% endfor %}
+
+<!--                                </optgroup>-->
+
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Qty</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="number" placeholder="" name="purchase_qty">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Pruchase Price</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="number" placeholder="" name="purchase_price">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Sale Price</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="number" placeholder="0" name="sale_price">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Logistic</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="number" placeholder="0" name="logistic">
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+                <input type="submit" value="Create Purchase" class="btn btn-outline-primary">
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!--=============================================================-->
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Purchase Data List</h4>
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th class="text-center">Supplier Name</th>
+                <th class="text-center">Items</th>
+                <th class="text-center">Qty</th>
+                <th>Purchase Price</th>
+                <th>Logistic</th>
+                <th>Total</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in supplier_list %}
+            <tr>
+                <td>{{p.p_date}}</td>
+                <td class="table-plus"><b>{{p.supplier_name}}</b></td>
+                <td>{{p.item_name}}</td>
+                <td>{{p.purchase_qty}}</td>
+                <td>{{p.purchase_price}}</td>
+                <td>{{p.logistic}}</td>
+                <td>{{p.total_purchase_price}}</td>
+
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}
+

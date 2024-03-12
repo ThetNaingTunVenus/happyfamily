@@ -26,3 +26,38 @@ class CheckoutForm(forms.ModelForm):
             # 'id':forms.Textarea
 
         }
+
+
+class AdminProductEditForm(forms.ModelForm):
+    class Meta:
+        model = Items
+        fields = ['item_name','category','pruchase_price','sell_price','balance_qty','barcode_id']
+        widgets = {
+            'item_name': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'barcode_id': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'category': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'pruchase_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),
+            'sell_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),
+            'balance_qty': forms.NumberInput(attrs={'class': 'form-control col-md-6', 'readonly':'True'}),
+
+        }
+
+class SupplierEditForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = ['supplier_name','phone_number','address']
+        widgets = {
+            'supplier_name': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'address': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+        }
+
+class PurchaseDataDeleteFrom(forms.ModelForm):
+    class Meta:
+        model = PurchaseList
+        fields = ['item_name','purchase_qty']
+        widgets = {
+            # 'p_date':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'item_name': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'purchase_qty': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+        }

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="title">
+                <h5>Are You Sure To Delete Data</h5>
+
+            </div>
+            <hr>
+            {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{success}}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+
+                        {{form.as_p}}
+
+
+
+                    </div>
+
+                </div>
+                <input type="submit" value="Delete" class="btn btn-outline-danger">
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!--=============================================================-->
+
+
+{% endblock content %}
+

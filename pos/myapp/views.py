@@ -107,6 +107,8 @@ class testbarcode(View):
 
 
 
+
+
 class UserRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -137,6 +139,17 @@ class UserLogoutView(View):
     def get(self,request):
         logout(request)
         return redirect('myapp:UserLoginView')
+
+#sale
+class SaleInvoiceCart(UserRequiredMixin, View):
+    def post(self, request):
+        pid = request.POST.get('pid')
+        pqty = request.POST.get('quantity')
+        product_obj = Items.objects.get(id=pid)
+        product_id = product_obj.id
+        subt = int(pqty) * int(product_obj.sell_price)
+        cart_id = self.request.session.get("cart_id", None)
+        return HttpResponse('suce')
 
 class MyCartView(UserRequiredMixin,TemplateView):
     template_name = 'mycartview.html'
@@ -311,3 +324,170 @@ class ProductCreate(View):
             item_list = Items.objects.all()
             context = {'message': message,'category':category,'item_list':item_list}
             return render(request, 'productcreate.html', context)
+
+
+######## Supplier ##############
+class SupplierCreate(View):
+    def get(self,request):
+        supplier = Supplier.objects.all()
+        context = {'supplier':supplier}
+        return render(request,'supplier.html', context)
+    def post(self,request):
+        supplier_name = request.POST.get('supplier_name')
+        phone_number = request.POST.get('phone_number')
+        address = request.POST.get('address')
+        message = None
+        if not supplier_name:
+            message = 'Please Enter Supplier Name'
+        elif not phone_number:
+            message = 'Please Enter Phone Number'
+        elif not address:
+            message = 'Enter Address'
+        if not message:
+            supplier_save = Supplier(supplier_name=supplier_name,phone_number=phone_number,address=address)
+            supplier_save.save()
+            success = 'Supplier Name create successfully'
+            supplier = Supplier.objects.all()
+            context = {'supplier': supplier,'success':success}
+            return render(request, 'supplier.html', context)
+        else:
+            supplier = Supplier.objects.all()
+            context = {'supplier': supplier, 'message': message}
+            return render(request, 'supplier.html', context)
+
+class SupplierEdit(UserRequiredMixin,View):
+    def get(self,request, pk):
+        pi = Supplier.objects.get(id=pk)
+        fm = SupplierEditForm(instance=pi)
+        return render(request,'supplieredit.html', {'form':fm})
+
+    def post(self, request, pk):
+        pi = Supplier.objects.get(id=pk)
+        fm = SupplierEditForm(request.POST,instance=pi)
+        if fm.is_valid():
+            fm.save()
+        return redirect('myapp:SupplierCreate')
+
+
+class PurchaseCreateView(TemplateView):
+    template_name = 'purchase_create_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #     # supplier id get from request url
+        supplier_id = self.kwargs['id']
+        # get car info
+        supplier_data = Supplier.objects.get(id=supplier_id)
+
+        context['supplier'] = Supplier.objects.get(id=supplier_id)
+        context['item'] = Items.objects.all()
+        context['supplier_list'] = PurchaseList.objects.filter(supplier_name=supplier_data.supplier_name)
+
+        return context
+
+
+
+class PurchaseData(View):
+    def get(self,request):
+        supplier = Supplier.objects.all()
+        purchasedata = PurchaseList.objects.all()
+        sum_purchase_qty = purchasedata.aggregate(Sum('purchase_qty'))['purchase_qty__sum']
+        sum_purchase_price = purchasedata.aggregate(Sum('purchase_price'))['purchase_price__sum']
+        sum_purchase_total = purchasedata.aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
+        sum_logistic = purchasedata.aggregate(Sum('logistic'))['logistic__sum']
+        context = {'supplier': supplier,
+                   'purchasedata':purchasedata,
+                   'sum_purchase_qty':sum_purchase_qty,
+                   'sum_purchase_price':sum_purchase_price,
+                   'sum_logistic':sum_logistic,
+                   'sum_purchase_total':sum_purchase_total,
+                   }
+        return render(request, 'purchasedata.html',context)
+    def post(self,request):
+        suppliername = request.POST.get('suppliername')
+        p_date = request.POST.get('p_date')
+        item_name = request.POST.get('item_name')
+        purchase_qty = request.POST.get('purchase_qty')
+        purchase_price = request.POST.get('purchase_price')
+        sale_price = request.POST.get('sale_price')
+        logistic = request.POST.get('logistic')
+        message = None
+        if not p_date:
+            message = 'please select Date'
+        elif not item_name:
+            message = 'please select Item'
+        elif not purchase_qty:
+            message = 'please enter quantity'
+        elif not purchase_price:
+            message = 'please enter purchase price'
+        if not message:
+            total_purchase_price =int(purchase_qty)*int(purchase_price)
+            purchase_logistic = int(total_purchase_price)+int(logistic)
+            purchase_list = PurchaseList(
+                supplier_name=suppliername,
+                item_name=item_name,
+                purchase_qty=purchase_qty,
+                purchase_price=purchase_price,
+                sale_price=sale_price,
+                logistic=logistic,
+                p_date=p_date,
+                total_purchase_price=purchase_logistic
+            )
+            purchase_list.save()
+            item_balance = Items.objects.filter(item_name=item_name)
+            balance_qty = item_balance[0].balance_qty
+            total_balance = int(balance_qty)+int(purchase_qty)
+            item_update = Items.objects.filter(item_name=item_name).update(pruchase_price=purchase_price,sell_price=sale_price,balance_qty=total_balance)
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            context = {'message':message}
+            # return redirect(request.META['HTTP_REFERER'])
+            return render(request,'purchase_create_view.html',context)
+
+class PurchaseReport(View):
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        message = None
+        if not fromdate:
+            message='select from date'
+        elif not todate:
+            message = 'select to date'
+        if not message:
+            supplier = Supplier.objects.all()
+            purchasedata = PurchaseList.objects.filter(p_date__range=[fromdate, todate])
+            sum_purchase_qty = purchasedata.aggregate(Sum('purchase_qty'))['purchase_qty__sum']
+            sum_purchase_price = purchasedata.aggregate(Sum('purchase_price'))['purchase_price__sum']
+            sum_logistic = purchasedata.aggregate(Sum('logistic'))['logistic__sum']
+            sum_purchase_total = purchasedata.aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
+            context = {'supplier': supplier,
+                       'purchasedata': purchasedata,
+                       'sum_purchase_qty': sum_purchase_qty,
+                       'sum_purchase_price': sum_purchase_price,
+                       'sum_logistic':sum_logistic,
+                       'sum_purchase_total':sum_purchase_total,
+                       }
+            return render(request, 'purchasedata.html', context)
+        else:
+            supplier = Supplier.objects.all()
+            context = {'supplier': supplier, 'message':message}
+            return render(request, 'purchasedata.html', context)
+
+
+
+class PurchaseDataDelete(View):
+    def get(self,request,pk):
+        pi = PurchaseList.objects.get(id=pk)
+        fm = PurchaseDataDeleteFrom(instance=pi)
+        return render(request, 'purchase_data_delete.html', {'form': fm})
+
+    def post(self, request,pk):
+        pi = PurchaseList.objects.get(id=pk)
+        item = Items.objects.get(item_name=pi.item_name)
+        item_n = item.balance_qty
+        pur_qty = pi.purchase_qty
+        remain_item_qty = int(item_n)-int(pur_qty)
+        item_update = Items.objects.filter(item_name=pi.item_name).update(balance_qty=remain_item_qty)
+        pi.delete()
+        return redirect('myapp:PurchaseData')
+
