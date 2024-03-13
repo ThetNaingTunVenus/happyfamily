@@ -23,6 +23,9 @@ urlpatterns = [
     path('PurchaseData/', PurchaseData.as_view(), name='PurchaseData'),
     path('PurchaseReport/', PurchaseReport.as_view(), name='PurchaseReport'),
     path('PurchaseDataDelete/<int:pk>/', PurchaseDataDelete.as_view(), name='PurchaseDataDelete'),
+    path('pdf_invoice_create/<int:id>/', pdf_invoice_create, name='pdf_invoice_create'),
+    path('InvoiceDetailView/<int:pk>/', InvoiceDetailView.as_view(), name='InvoiceDetailView'),
+    path('InvoiceThermalPrintView/<int:pk>/', InvoiceThermalPrintView.as_view(), name='InvoiceThermalPrintView'),
 
     #Report
 

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!--        <link rel="stylesheet" href="style.css">-->
+        <title>{{ord_obj.id}}</title>
+      <style>
+        * {
+    font-size: 12px;
+    font-family: 'Times New Roman';
+}
+
+td,
+th,
+tr,
+table {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+}
+
+td.description,
+th.description {
+    width: 75px;
+    max-width: 75px;
+}
+
+td.quantity,
+th.quantity {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+td.price,
+th.price {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+.centered {
+    text-align: center;
+    align-content: center;
+}
+
+.ticket {
+    width: 155px;
+    max-width: 155px;
+}
+
+img {
+    max-width: inherit;
+    width: inherit;
+}
+
+@media print {
+    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+    }
+}
+      </style>
+
+    </head>
+    <body>
+        <div class="ticket">
+
+            <p class="centered">BESTBUY IN RANGOON
+                <br>09-941844742
+                <br>No.8,Maha_Bawga_Street, Kamayaut, Yangon</p>
+            <hr>
+            Invoice- {{ord_obj.id}}
+            <br>
+            Date -{{ord_obj.created_at}}
+            <br>
+            Name - {{ord_obj.ordered_by}}-{{ord_obj.mobile}}
+            <hr>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="quantity">Qty</th>
+                        <th class="description">ItemName</th>
+                        <th class="price">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in ord_obj.cart.cartproduct_set.all %}
+                    <tr>
+                        <td class="quantity">{{p.quantity}}</td>
+                        <td class="description">{{p.product.item_name}}</td>
+                        <td class="price">{{p.subtotal}}</td>
+                    </tr>
+                {% endfor %}
+                    <tr>
+                        <td class="quantity"></td>
+                        <td class="description">Total</td>
+                        <td class="price">{{ord_obj.total}}</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity">1.00</td>
+                        <td class="description">Discount</td>
+                        <td class="price">{{ord_obj.discount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity"></td>
+                        <td class="description">Delivery</td>
+                        <td class="price">{{ord_obj.delivery_fee}}</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity"></td>
+                        <td class="description">Grand Total</td>
+                        <td class="price">{{ord_obj.all_total_delivery}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% if ord_obj.shipping_address %}
+            <p>DeliveryBy-:{{ord_obj.delivery_system}}</p>
+            <p class="centered">{{ord_obj.shipping_address}}
+                <br></p>
+            {% endif %}
+            <p class="centered">Thanks for your purchase!
+                <br></p>
+        </div>
+        <button id="btnPrint" class="hidden-print">Print</button>
+<!--        <script src="script.js"></script>-->
+    </body>
+    <script>
+      const $btnPrint = document.querySelector("#btnPrint");
+      $btnPrint.addEventListener("click", () => {
+      window.print();
+});
+    </script>
+</html>

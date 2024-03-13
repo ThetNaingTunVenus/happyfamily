@@ -149,7 +149,84 @@ class SaleInvoiceCart(UserRequiredMixin, View):
         product_id = product_obj.id
         subt = int(pqty) * int(product_obj.sell_price)
         cart_id = self.request.session.get("cart_id", None)
-        return HttpResponse('suce')
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_product_in_cart = cart_obj.cartproduct_set.filter(product=product_obj)
+            # Product already exists in cart
+            if this_product_in_cart.exists():
+                  
+                cartproduct = this_product_in_cart.last()
+                item_filter = Items.objects.filter(id=product_id)
+                balance_filter = item_filter[0].balance_qty
+                qty_balance = int(pqty)
+                cart_sub_total = int(product_obj.sell_price) * int(pqty)
+                cartproduct_balance = int(balance_filter) - int(qty_balance)
+                item_update = Items.objects.filter(id=product_id)
+                item_update.update(balance_qty=cartproduct_balance)
+                # print('success !!!!!!')
+                cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj,
+                                                         rate=product_obj.sell_price, quantity=pqty,
+                                                         subtotal=cart_sub_total,remain_balance=cartproduct_balance)
+
+                # item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+
+
+                cart_obj.total += cart_sub_total
+                cart_obj.tax = cart_obj.total * 0.00
+                cart_obj.super_total = cart_obj.tax + cart_obj.total
+                cart_obj.save()
+
+                 
+
+            # New item added in cart
+            else:
+                item_filter = Items.objects.filter(id=product_id)
+                balance_filter = item_filter[0].balance_qty
+                qty_balance = int(pqty)
+                cart_sub_total = int(product_obj.sell_price) * int(pqty)
+                cartproduct_balance = int(balance_filter) - int(qty_balance)
+                item_update = Items.objects.filter(id=product_id)
+                item_update.update(balance_qty=cartproduct_balance)
+                # print('success !!!!!!')
+                cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj,
+                                                         rate=product_obj.sell_price, quantity=pqty,
+                                                         subtotal=cart_sub_total,remain_balance=cartproduct_balance)
+
+                # item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+
+
+                cart_obj.total += cart_sub_total
+                cart_obj.tax = cart_obj.total * 0.00
+                cart_obj.super_total = cart_obj.tax + cart_obj.total
+                cart_obj.save()
+        else:
+            cart_obj = Cart.objects.create(total=0, staff=self.request.user)
+            self.request.session['cart_id'] = cart_obj.id
+            item_filter = Items.objects.filter(id=product_id)
+            balance_filter = item_filter[0].balance_qty
+            qty_balance = int(pqty)
+            cart_sub_total = int(product_obj.sell_price) * int(pqty)
+            cartproduct_balance = int(balance_filter) - int(qty_balance)
+            cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj, rate=product_obj.sell_price,
+                                                     quantity=pqty, subtotal=cart_sub_total,remain_balance=cartproduct_balance)
+
+            item_update = Items.objects.filter(id=product_id)
+            item_update.update(balance_qty=cartproduct_balance)
+            # cart_obj_total = 
+            cart_obj.total += cart_sub_total
+            cart_obj.tax = cart_obj.total * 0.00
+            # print('succ')
+            cart_obj.super_total = cart_obj.tax + cart_obj.total
+            cart_obj.save()
+
+
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+        else:
+            cart = None
+        # context['cart'] = cart
+        return redirect('myapp:MyCartView')
 
 class MyCartView(UserRequiredMixin,TemplateView):
     template_name = 'mycartview.html'
@@ -275,6 +352,47 @@ class CheckoutView(UserRequiredMixin,CreateView):
         else:
             return redirect('myapp:MyCartView')
         return super().form_valid(form)
+
+
+# ================= xhtml2pdf ===============
+def pdf_invoice_create(request,id):
+    ord_obj = Order.objects.get(id=id)
+    template_path = 'pdf_invoice.html'
+    context = {'ord_obj':ord_obj}
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="invoice.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(
+        html,dest=response,
+    )
+    if pisa_status.err:
+        return HttpResponse('have a error pdf')
+    return response
+    
+class InvoiceDetailView(UserRequiredMixin,DetailView):
+    template_name = 'invoicedetail.html'
+    model = Order
+    context_object_name = 'ord_obj'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allstatus'] = STATUS
+
+        return context
+
+
+class InvoiceThermalPrintView(DetailView):
+    template_name = 'test_slip.html'
+    model = Order
+    context_object_name = 'ord_obj'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allstatus'] = STATUS
+
+        return context
 
 class CategoryCreate(View):
     def get(self,request):

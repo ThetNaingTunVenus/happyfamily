@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<img src="{% static 'vendors/images/invoice.png' %}" alt=""/>
+
+<div class="row col-md-12 mt-30">
+    <div class="col-md-6"><h2>Name:{{ord_obj.ordered_by}}</h2></div>
+    <div class="text-right col-md-6"><h2>{{ord_obj.id}}</h2></div>
+</div>
+<hr>
+<div class="row col-md-12">
+    <div class="col-md-6"><h2>Phone:{{ord_obj.mobile}}</h2></div>
+    <div class="text-right col-md-6"><h2>{{ord_obj.created_at}}</h2></div>
+</div>
+<hr>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col"><h1>#</h1></th>
+            <th><h1>Item</h1></th>
+            <th class="text-right"><h1>Qty</h1></th>
+            <th class="text-right"><h1>Amount</h1></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in ord_obj.cart.cartproduct_set.all %}
+        <tr>
+            <th scope="row"><h1>{{forloop.counter}}</h1></th>
+            <th class="font-100"><h1>{{p.product.item_name}}</h1></th>
+            <th class="text-right font-40"><h1>{{p.quantity}}</h1></th>
+            <th class="text-right font-40"><h1>{{p.subtotal}}</h1></th>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="3" class="text-right"><h2>Amount :</h2></th>
+            <th class="text-right"><h1>{{ord_obj.total}}</h1></th>
+        </tr>
+        <tr>
+            <th colspan="3" class="text-right"><h2>Discount :</h2></th>
+            <th class="text-right"><h1>{{ord_obj.discount}}</h1></th>
+        </tr>
+        <tr>
+            <th colspan="3" class="text-right"><h2>Delivery Fee :</h2></th>
+            <th class="text-right"><h1>{{ord_obj.delivery_fee}}</h1></th>
+        </tr>
+
+        <tr>
+            <th colspan="3" class="text-right"><h2>Total Amount :</h2></th>
+            <th class="text-right font-60"><h1>{{ord_obj.all_total_delivery}}</h1></th>
+        </tr>
+        <tr>
+            <th colspan="4">
+                <span><strong><h2>Delivered By : :{{ord_obj.delivery_system}}</h2></strong></span>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+{% if ord_obj.shipping_address %}
+<span><strong><h2>ပို့ဆောင်ရန် လိပ်စာ</h2></strong></span>
+<hr>
+<span class="" style="font-size:60px;line-height: 2.0;">{{ord_obj.shipping_address}}</span>
+{% endif %}
+<hr>
+<br>
+<div class="text-center">
+    <h2>THANK YOU FOR YOUR ORDER ...</h2>
+</div>
+<br>
+<hr>
+<hr>
+<button id="btnPrint" class="hidden-print">Print</button>
+<script>
+const $btnPrint = document.querySelector("#btnPrint");
+$btnPrint.addEventListener("click", () => {
+    window.print();
+});
+</script>
+
+{% endblock content %}
