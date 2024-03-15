@@ -150,7 +150,7 @@
                                 data-target="#Medium-modal-{{p.id}}"
                                 type="button"
                             >
-                               add
+                               Add to List
                             </a>
                             <div
                                 class="modal fade"
@@ -189,8 +189,8 @@
                                             >
                                                 Close
                                             </button>
-                                            <button type="submit" class="btn btn-primary">
-                                                Save changes
+                                            <button type="submit" class="btn btn-success">
+                                                Add to Cart
                                             </button>
                                         </div>
                                     </form>
@@ -224,7 +224,7 @@
             <tr class="">
                 <th class="table-plus datatable-nosort">Customer Name</th>
                 <th>Invoice No</th>
-                <!--                <th>Amount</th>-->
+                <th>Member</th>
                 <th>Date</th>
                 <th>status</th>
             </tr>
@@ -234,7 +234,11 @@
             <tr class="">
                 <td class="table-plus">{{p.ordered_by}}</td>
                 <td><a href="{% url 'myapp:pdf_invoice_create' p.id%}"><strong>{{p.id}}</strong></a></td>
-                <!--                <td>{{p.all_total}}</td>-->
+                {% if p.member %}
+                <td>{{p.member}}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
                 <td>{{p.created_at}}</td>
                 <td>
                     <a href="{% url 'myapp:InvoiceThermalPrintView' p.id%}" target="_blank" class="btn btn-sm btn-danger">Print</a>

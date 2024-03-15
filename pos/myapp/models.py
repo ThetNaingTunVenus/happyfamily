@@ -85,7 +85,7 @@ STATUS=(
 
 PAYMENT_TYPE = (
     ("Cash","Cash"),
-("COD","COD"),
+("Credit","Credit"),
 ("Kpay","Kpay"),
 ("WavePay","WavePay"),
 )
@@ -95,6 +95,14 @@ class DeliverySystem(models.Model):
 
     def __str__(self):
         return self.delivery_name
+
+class Member(models.Model):
+    name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255)
+    address = models.TextField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
@@ -108,6 +116,7 @@ class Order(models.Model):
     tax = models.PositiveIntegerField()
     delivery_fee = models.IntegerField(default=0)
     delivery_system = models.ForeignKey(DeliverySystem, on_delete=models.CASCADE, blank=True,null=True)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, blank=True,null=True)
     all_total = models.PositiveIntegerField()
     all_total_delivery = models.IntegerField(default=0)
     ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Cash')

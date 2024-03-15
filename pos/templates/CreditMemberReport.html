@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <!-- <label>Select Member</label> -->
+                    <select
+                        class="custom-select2 form-control"
+                        name="mn"
+                        style="width: 100%; height: 38px"
+                        data-style="btn-outline-primary"
+                    >
+                        <optgroup>
+                            <option value="">Select Member Name</option>
+                            {% for m in mem %}
+                            <option value="{{m.id}}">{{m.name}}</option>
+                            {% endfor %}
+                        </optgroup>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-primary"><i class="micon dw dw-filter">Search</i></button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

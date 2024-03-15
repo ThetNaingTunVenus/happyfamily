@@ -12,21 +12,30 @@ class GetBarCode(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'shipping_address','discount','delivery_fee','delivery_system','payment',]
+        fields = ['member', 'ordered_by', 'mobile', 'shipping_address','discount','payment',]
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),
             'shipping_address': forms.Textarea(attrs={'class': 'form-control'}),
-            'delivery_fee': forms.NumberInput(attrs={'class':'form-control col-md-6'}),
+            'member': forms.Select(attrs={'class':'form-control custom-select2 col-md-6'}),
             'discount': forms.NumberInput(attrs={'class': 'form-control col-md-4'}),
-            'payment': forms.Select(attrs={'class': 'form-control col-md-6'}),
-            'delivery_system': forms.Select(attrs={'class': 'form-control col-md-6'}),
+            'payment': forms.Select(attrs={'class': 'form-control col-md-4'}),
+            # 'delivery_system': forms.Select(attrs={'class': 'form-control col-md-6'}),
             # 'deli_payment':forms.BooleanField(),
 
             # 'id':forms.Textarea
 
         }
 
+class MemberForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control'}),
+        }
 
 class AdminProductEditForm(forms.ModelForm):
     class Meta:

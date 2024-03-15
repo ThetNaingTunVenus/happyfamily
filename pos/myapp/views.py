@@ -609,3 +609,20 @@ class PurchaseDataDelete(View):
         pi.delete()
         return redirect('myapp:PurchaseData')
 
+class CreateMember(View):
+    def get(self, request):
+        fm = MemberForm()
+        m = Member.objects.all()
+        return render(request, 'CreateMember.html', {'m':m, 'form':fm})
+
+    def post(self, request):
+        fm = MemberForm(request.POST)
+        if fm.is_valid():
+            fm.save()
+        return redirect(request.META['HTTP_REFERER'])
+
+class CreditMemberReport(View):
+    def get(self, request):
+        mem = Member.objects.all()
+        context = {'mem':mem}
+        return render(request, 'CreditMemberReport.html', context)

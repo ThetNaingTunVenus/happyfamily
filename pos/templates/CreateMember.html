@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<!--=============================================================-->
+<div class="card-box mb-30">
+    <div class="pd-20">
+
+        <a
+									href="#"
+									class="btn btn-sm btn-outline-success"
+									data-toggle="modal"
+									data-target="#Medium-modal"
+									type="button"
+								>
+									+ Add Member
+								</a>
+								<div
+									class="modal fade"
+									id="Medium-modal"
+									tabindex="-1"
+									role="dialog"
+									aria-labelledby="myLargeModalLabel"
+									aria-hidden="true"
+								>
+									<div class="modal-dialog modal-dialog-centered">
+                                        <form action="{% url 'myapp:CreateMember' %}" method="post">{% csrf_token %}
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title" id="myLargeModalLabel">
+													Create Member
+												</h4>
+												<button
+													type="button"
+													class="close"
+													data-dismiss="modal"
+													aria-hidden="true"
+												>
+													×
+												</button>
+											</div>
+
+											<div class="modal-body">
+                                                {{form}}
+												
+											</div>
+											<div class="modal-footer">
+												<button
+													type="button"
+													class="btn btn-secondary"
+													data-dismiss="modal"
+												>
+													Close
+												</button>
+												<button type="submit" class="btn btn-success">
+													Save
+												</button>
+											</div>
+										</div>
+                                            </form>
+									</div>
+								</div>
+
+    </div>
+    <div class="pb-20">
+        <table class="data-table table stripe hover nowrap">
+            <thead>
+            <tr>
+
+                <th class="text-center">Name</th>
+                <th class="text-center">Phone</th>
+                <th class="text-center">Address</th>
+
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in m %}
+            <tr>
+                <td class="table-plus text-center"><b>{{p.name}}</b></td>
+                <td class="table-plus text-center"><b>{{p.phone}}</b></td>
+                <td class="table-plus text-center"><b>{{p.address}}</b></td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}
+
