@@ -127,6 +127,11 @@ class Order(models.Model):
     def __str__(self):
         return "Order : " + str(self.id)
 
+class CreditPaymentRecord(models.Model):
+    inv_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    paid_amt = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class PurchaseList(models.Model):
     supplier_name = models.CharField(max_length=225)

@@ -5,6 +5,9 @@
 
 <div class="card-box mb-30">
     <div class="pd-20">
+        <form action="#" method="post">
+            {% csrf_token %}
+        
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -27,11 +30,116 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-outline-primary"><i class="micon dw dw-filter">Search</i></button>
+                    <button type="submit" class="btn btn-primary"><i class="micon dw dw-filter">Search</i></button>
                     
                 </div>
             </div>
         </div>
+    </form>
+    </div>
+<hr>
+    <div class="pb-20">
+        <h4 class="h4 text-blue">Table</h4>
+        <table class="table hover data-table-export nowrap">
+            <thead>
+            <tr>
+
+                <th class="text-center">ID</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Member</th>
+                <th class="text-center">Amount</th>
+                <th class="text-center">Payment</th>
+                
+
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in ord %}
+            <tr>
+                <td class="table-plus text-center"><b>{{p.id}}</b></td>
+                <td class="text-center">{{p.created_at}}</td>
+                <td class="table-plus text-center"><b>{{p.member}}</b></td>
+                <td class="table-plus text-center"><b>{{p.all_total_delivery}}</b></td>
+                <td class="table-plus text-center">
+                    <!-- <b><a href="#" class="badge badge-info">{{p.payment}}</a></b> -->
+                    <a
+									href="#"
+									class="btn btn-sm btn-outline-primary"
+									data-toggle="modal"
+									data-target="#Medium-modal-{{p.id}}"
+									type="button"
+								>
+									{{p.payment}}
+								</a>
+								<div
+									class="modal fade"
+									id="Medium-modal-{{p.id}}"
+									tabindex="-1"
+									role="dialog"
+									aria-labelledby="myLargeModalLabel"
+									aria-hidden="true"
+								>
+									<div class="modal-dialog modal-dialog-centered">
+                                        <form action="{% url 'myapp:CreditBillPayment' %}" method="post">{% csrf_token %}
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title" id="myLargeModalLabel">
+													Are You Sure Payment ?
+												</h4>
+												<button
+													type="button"
+													class="close"
+													data-dismiss="modal"
+													aria-hidden="true"
+												>
+													×
+												</button>
+											</div>
+
+											<div class="modal-body">
+												<ul class="list-group">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        Customer Name : 
+                                                        <span class="badge badge-info badge-pill">{{p.member}}</span>
+                                                      </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                      Invoice ID
+                                                      <span class="badge badge-info badge-pill">{{p.id}}</span>
+                                                    </li>
+
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                      Credit Invoice Amount
+                                                      <span class="badge badge-info badge-pill">{{p.all_total_delivery}} MMK</span>
+                                                    </li>
+                                                    
+                                                  </ul>
+											</div>
+											<div class="modal-footer">
+												<button
+													type="button"
+													class="btn btn-secondary"
+													data-dismiss="modal"
+												>
+													Close
+												</button>
+                                                <input type="number" name="invid" value="{{p.id}}" hidden>
+												<button type="submit" class="btn btn-primary">
+													Yes, Payment
+												</button>
+											</div>
+										</div>
+                                            </form>
+									</div>
+								</div>
+                </td>
+                
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock content %}

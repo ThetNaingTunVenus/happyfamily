@@ -624,5 +624,25 @@ class CreateMember(View):
 class CreditMemberReport(View):
     def get(self, request):
         mem = Member.objects.all()
-        context = {'mem':mem}
+        ord = Order.objects.filter(payment="Credit")
+        context = {'mem':mem, 'ord':ord}
         return render(request, 'CreditMemberReport.html', context)
+    
+    def post(self, request):
+        mn = request.POST.get('mn')
+        if mn == "":
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            mem = Member.objects.all()
+            mem_obj = Member.objects.get(id=mn)
+            ord = Order.objects.filter(payment="Credit", member=mem_obj)
+            context = {'ord':ord,'mem':mem}
+            return render(request, 'CreditMemberReport.html', context)
+
+class CreditBillPayment(View):
+    def post(self, request):
+        i = request.POST.get('invid')
+        ord_id = Order.objects.get(id=i)
+        ord_id.payment = "Cash"
+        ord_id.save()
+        return redirect(request.META['HTTP_REFERER'])

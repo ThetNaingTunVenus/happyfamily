@@ -19,6 +19,7 @@ urlpatterns = [
     #member
     path('CreateMember/', CreateMember.as_view(), name='CreateMember'),
     path('CreditMemberReport/', CreditMemberReport.as_view(), name='CreditMemberReport'),
+    path('CreditBillPayment/', CreditBillPayment.as_view(), name='CreditBillPayment'),
 
     #purchase
     path('SupplierCreate/', SupplierCreate.as_view(), name='SupplierCreate'),
